@@ -29,8 +29,6 @@ func main() {
 		c.File(path)
 	})
 
-	src.RegisterAuthRoutes(router)
-
 	// アプリケーションの実行
 	var port string = src.Config.ServerPort
 	log.Println("Server started on http://localhost:" + port)

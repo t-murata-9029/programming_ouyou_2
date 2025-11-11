@@ -38,7 +38,7 @@ func RegisterAuthRoutes(router *gin.Engine) {
 	router.POST("/api/auth/register", func(c *gin.Context) {
 		var form AuthForm
 		c.ShouldBindJSON(&form)
-		redirectTo := strings.TrimRight(c.Request.Host, "/") + "/"
+		redirectTo := baseHostURL(c)
 		result, _ := Signup(form.Email, form.Password, redirectTo)
 		if result["id"] != nil {
 			c.JSON(http.StatusOK, gin.H{"message": "Registration successful. Please check your email for confirmation."})
@@ -70,4 +70,3 @@ func RegisterAuthRoutes(router *gin.Engine) {
 	})
 
 }
-
