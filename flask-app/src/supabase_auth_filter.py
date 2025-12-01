@@ -21,4 +21,3 @@ def auth_filter():
     if not supabase_result.get("id"):
         return jsonify({"error": "Unauthorized"}), 401
     g.user_id = supabase_result.get("id")
-    

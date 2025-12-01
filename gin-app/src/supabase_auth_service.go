@@ -64,3 +64,8 @@ func GetUserByAccessToken(accessToken string) (map[string]interface{}, int) {
 func Logout(accessToken string) (map[string]interface{}, int) {
 	return apiRequest("POST", "/auth/v1/logout", nil, accessToken)
 }
+
+// GitHub認証用URL取得
+func GetGithubSigninURL(redirectTo string) string {
+	return fmt.Sprintf("%s/auth/v1/authorize?provider=github&redirect_to=%s&scopes=user:email", Config.SupabaseURL, redirectTo)
+}

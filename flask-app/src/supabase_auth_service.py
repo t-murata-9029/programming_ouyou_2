@@ -2,12 +2,10 @@ from config import Config
 import requests
 from typing import Dict, Any, Tuple
 
-
 class SupabaseAuthService:
     # APIリクエスト処理
     def api_request(self, method: str, path: str, data: Dict[str, Any] = None, access_token: str = None) -> Tuple[Dict[str, Any], int]:
-        headers = {"apikey": Config.SUPABASE_ANON_KEY,
-                   "Content-Type": "application/json"}
+        headers = {"apikey": Config.SUPABASE_ANON_KEY, "Content-Type": "application/json"}
         if access_token:
             headers["Authorization"] = f"Bearer {access_token}"
         url = f"{Config.SUPABASE_URL}{path}"
@@ -25,8 +23,7 @@ class SupabaseAuthService:
 
     # サインアップ(メール/パスワード)
     def signup(self, email: str, password: str, redirect_to: str) -> Tuple[Dict[str, Any], int]:
-        data = {"email": email, "password": password,
-                "options": {"email_redirect_to": redirect_to}}
+        data = {"email": email, "password": password, "options": {"email_redirect_to": redirect_to}}
         return self.api_request("POST", "/auth/v1/signup", data=data)
 
     # ユーザ情報取得
@@ -45,3 +42,7 @@ class SupabaseAuthService:
     # GitHub認証用URL取得
     def get_github_signin_url(self, redirect_to: str) -> str:
         return f"{Config.SUPABASE_URL}/auth/v1/authorize?provider=github&redirect_to={redirect_to}&scopes=user:email"
+    
+    
+
+    

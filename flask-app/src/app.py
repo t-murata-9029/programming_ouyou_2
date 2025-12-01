@@ -6,7 +6,6 @@ from routes_auth import bp_auth
 from supabase_auth_filter import auth_filter
 from models import db
 from routes_memo import bp_memo
-from supabase_auth_filter import auth_filter
 
 # Flaskアプリケーション初期化
 app = Flask(__name__, static_folder="static", static_url_path="")
@@ -17,8 +16,6 @@ CORS(
     allow_headers="*",
     supports_credentials=True
 )
-app.register_blueprint(bp_auth)
-app.before_request(auth_filter)
 # DB設定(SQLAlchemy設定)
 app.config["SQLALCHEMY_DATABASE_URI"] = Config.TIDB_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -27,6 +24,9 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 }
 db.init_app(app)
 
+app.register_blueprint(bp_auth)
+app.before_request(auth_filter)
+app.register_blueprint(bp_memo)
 
 # デフォルトページ
 @app.route("/")
