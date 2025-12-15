@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { apiFetch, errorHandling } from '@/lib/apiFetch';
+import { apiFetch, errorHandling, getApiUrl } from '@/lib/apiFetch';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
 export default function LoginPage() {
@@ -67,7 +67,7 @@ export default function LoginPage() {
   };
 
   const loginGithub = () => {
-    window.location.href = '/api/auth/oauth2/github';
+    window.location.href = getApiUrl('/api/auth/oauth2/github');
   };
 
   return (
