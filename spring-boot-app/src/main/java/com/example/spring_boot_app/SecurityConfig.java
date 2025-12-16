@@ -13,11 +13,14 @@ import java.util.Arrays;
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.beans.factory.annotation.Value;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @Autowired
     private SupabaseAuthFilter supabaseAuthFilter;
@@ -35,16 +38,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(withDefaults())
-            .csrf(csrf -> csrf.disable())            
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(
-                        "/", "/*.html", "/*.css", "/*.js", "/favicon.ico"
-                        // この行のみ追加
-                        , "/api/auth/**"
-                    ).permitAll()
-                .anyRequest().authenticated()
-            ).addFilterBefore(supabaseAuthFilter, UsernamePasswordAuthenticationFilter.class);;
+                .cors(withDefaults())
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/", "/*.html", "/*.css", "/*.js", "/favicon.ico"
+                                // この行のみ追加
+                                , "/api/auth/**")
+                        .permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(supabaseAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        ;
         return http.build();
     }
 
@@ -61,7 +65,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:3000"));
+        if (frontendUrl.isEmpty()) {
+            configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+        } else {
+            configuration.setAllowedOrigins(Arrays.asList(frontendUrl));
+        }
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -70,4 +78,3 @@ public class SecurityConfig {
         return source;
     }
 }
- 
